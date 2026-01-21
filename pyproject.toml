@@ -1,0 +1,112 @@
+[project]
+name = "wyoming-onnx-stt"
+dynamic = ["version"]
+description = "Wyoming server for ONNX-based speech-to-text (onnx-asr backend)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "wyoming>=1.8,<2",
+    "onnx-asr[gpu,hub]",
+    "pydantic-settings>=2.0",
+    "zeroconf>=0.148.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/lmoe/wyoming-onnx-stt"
+
+[project.scripts]
+wyoming-onnx-stt = "wyoming_onnx_stt.__main__:run"
+
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["wyoming_onnx_stt"]
+
+[tool.setuptools_scm]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+    "mypy",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 140
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "PTH",    # flake8-use-pathlib
+    "PL",     # pylint
+    "RUF",    # ruff-specific
+    "PERF",   # perflint
+    "S",      # bandit security
+    "BLE",    # blind except
+    "A",      # shadowing builtins
+    "T20",    # print statements
+    "ERA",    # commented-out code
+    "TRY",    # exception handling
+    "RET",    # return statements
+    "SLF",    # private member access
+    "FBT",    # boolean trap
+    "G",      # logging format
+    "PIE",    # misc checks
+    "FLY",    # f-strings
+]
+ignore = [
+    "PLR0913",  # too many arguments
+    "PLR2004",  # magic value comparison
+    "PLR0911",  # too many return statements
+    "PLR0915",  # too many statements
+    "PLC0415",  # import outside top-level
+    "S101",     # assert used for type narrowing
+    "S104",     # binding to all interfaces - it's a server
+    "TRY003",   # long exception messages - they're fine
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["wyoming_onnx_stt"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_any_explicit = true
+disallow_any_generics = true
+strict_equality = true
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = [
+    "wyoming.*",
+    "onnx_asr.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "wyoming_onnx_stt.config",
+    "wyoming_onnx_stt.handler",
+]
+disallow_any_explicit = false  # pydantic/numpy have Any in their generics
